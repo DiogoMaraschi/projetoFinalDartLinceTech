@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'dart:convert';
 
-import 'model/estado.dart';
-import 'model/leitura_clima.dart';
+import '../model/estado.dart';
+import '../model/leitura_clima.dart';
 
 void main() async {
   final leitor = LeitorCsv();
@@ -15,7 +16,9 @@ class LeitorCsv {
     '/Users/diogomaraschi/VSCODE/projetoFinalDartLinceTech/sensores',
   );
 
-  Future<void> lerArquivosCsv() async {
+  Future<List<LeituraClima>> lerArquivosCsv() async {
+    List<LeituraClima> listaCompleta = [];
+
     // Verifica se a pasta existe
     if (await diretorio.exists()) {
       // Lista todos os itens da pasta
@@ -26,7 +29,7 @@ class LeitorCsv {
         // Processa apenas arquivos CSV
         if (item is File && item.path.endsWith('.csv')) {
           // Lê todas as linhas do arquivo
-          final linhas = await item.readAsLines();
+          final linhas = await item.readAsLines(encoding: latin1);
 
           // Obtém o estado pelo nome do arquivo
           final estado = converterEstado(item.path);
@@ -37,14 +40,14 @@ class LeitorCsv {
           // Converte as linhas em objetos
           final leituras = converterLinhas(linhas, estado, ano);
 
-          // Apenas para teste
-          print('Arquivo: ${item.path}');
-          print('Leituras: ${leituras.length}');
+          // Adiciona a lista inteira
+          listaCompleta.addAll(leituras);
         }
       }
     } else {
       print('Diretório não encontrado.');
     }
+    return listaCompleta;
   }
 
   List<LeituraClima> converterLinhas(

@@ -1,7 +1,16 @@
-import 'view/menu.dart';
+import 'calculadoras/calculadora_temperatura.dart';
+import 'utils/conversor.dart';
+import 'controller/leitor_csv.dart';
+import 'model/estado.dart';
 
-void main() {
-  final menu = Menu();
+void main() async {
+  final leitor = LeitorCsv();
 
-  menu.mostraMenu();
+  final leituras = await leitor.lerArquivosCsv();
+
+  final calculadora = CalculadoraTemperatura();
+
+  final mediaSp = calculadora.mediaPorEstado(leituras, Estado.saoPaulo);
+
+  print('Média SP: ${mediaSp.toStringAsFixed(2)} °C');
 }
