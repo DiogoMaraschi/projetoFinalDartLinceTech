@@ -1,0 +1,21 @@
+{
+  "roots": [
+    "projeto_final_dart_lince_tech"
+  ],
+  "packages": [
+    {
+      "name": "projeto_final_dart_lince_tech",
+      "version": "1.0.0",
+      "dependencies": [
+        "yaansi"
+      ],
+      "devDependencies": []
+    },
+    {
+      "name": "yaansi",
+      "version": "1.2.0",
+      "dependencies": []
+    }
+  ],
+  "configVersion": 1
+}

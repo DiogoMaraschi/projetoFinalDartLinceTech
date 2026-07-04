@@ -1,0 +1,9 @@
+name: projeto_final_dart_lince_tech
+description: Projeto final Dart clima
+version: 1.0.0
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  yaansi: ^1.0.0

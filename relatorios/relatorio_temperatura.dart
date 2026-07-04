@@ -1,12 +1,16 @@
+import 'package:yaansi/yaansi.dart';
+
 import '../calculadoras/calculadora_temperatura.dart';
 import '../model/estado.dart';
 import '../model/leitura_clima.dart';
 import '../utils/conversor.dart';
+import '../utils/cores.dart';
 import 'relatorio.dart';
 
 class RelatorioTemperatura extends Relatorio {
-  final CalculadoraTemperatura calculadora = CalculadoraTemperatura();
-  final Conversor conversor = Conversor();
+  final calculadora = CalculadoraTemperatura();
+  final conversor = Conversor();
+  final cores = Cores();
 
   @override
   String gerar(List<LeituraClima> leituras) {
@@ -20,6 +24,7 @@ class RelatorioTemperatura extends Relatorio {
     _adicionarDadosEstado(buffer, leituras, Estado.saoPaulo);
     _adicionarDadosEstado(buffer, leituras, Estado.santaCatarina);
 
+    // Retorna o valor na cor verde
     return buffer.toString();
   }
 
@@ -66,9 +71,9 @@ class RelatorioTemperatura extends Relatorio {
       final minima = calculadora.minimaPorEstadoMes(leituras, estado, mes);
 
       buffer.writeln('Mês $mes:');
-      buffer.writeln('Média: ${media.toStringAsFixed(2)} °C');
-      buffer.writeln('Máxima: ${maxima.toStringAsFixed(2)} °C');
-      buffer.writeln('Mínima: ${minima.toStringAsFixed(2)} °C');
+      buffer.writeln(cores.media('Média: ${media.toStringAsFixed(2)} °C'));
+      buffer.writeln(cores.maxima('Máxima: ${maxima.toStringAsFixed(2)} °C'));
+      buffer.writeln(cores.minima('Mínima: ${minima.toStringAsFixed(2)} °C'));
       buffer.writeln();
     }
   }
@@ -87,7 +92,8 @@ class RelatorioTemperatura extends Relatorio {
       final hora = entry.key;
       final mediaHora = entry.value;
 
-      buffer.writeln('${hora}h -> ${mediaHora.toStringAsFixed(2)} °C');
+      buffer.writeln(
+          cores.media('${hora}h -> ${mediaHora.toStringAsFixed(2)} °C'));
     }
 
     buffer.writeln();
@@ -98,9 +104,12 @@ class RelatorioTemperatura extends Relatorio {
     final fahrenheit = conversor.celsiusParaFahrenheit(celsius);
     final kelvin = conversor.celsiusParaKelvin(celsius);
 
-    buffer.writeln('${celsius.toStringAsFixed(2)} °C');
-    buffer.writeln('${fahrenheit.toStringAsFixed(2)} °F');
-    buffer.writeln('${kelvin.toStringAsFixed(2)} K');
+    buffer.writeln(cores.celsius('${celsius.toStringAsFixed(2)} °C'));
+
+    buffer.writeln(cores.fahrenheit('${fahrenheit.toStringAsFixed(2)} °F'));
+
+    buffer.writeln(cores.kelvin('${kelvin.toStringAsFixed(2)} K'));
+
     buffer.writeln();
   }
 }
