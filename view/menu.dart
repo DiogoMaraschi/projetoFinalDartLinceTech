@@ -1,22 +1,16 @@
 import 'dart:io';
 
 class Menu {
-  bool _executando = true;
+  int mostrar() {
+    print('\n=== MENU ===');
+    print('1 - Temperatura');
+    print('2 - Umidade');
+    print('3 - Direção do Vento');
+    print('0 - Sair');
 
-  void mostraMenu() {
-    do {
-      print('\n=== MENU ===');
-      print('1 - Temperatura');
-      print('2 - Umidade');
-      print('3 - Direção do Vento');
-      print('0 - Sair');
+    stdout.write('Escolha uma opção: ');
+    final entrada = stdin.readLineSync();
 
-      stdout.write('Escolha uma opção: ');
-      String? entrada = stdin.readLineSync();
-
-      final opcao = int.tryParse(entrada ?? '') ?? -1;
-
-      print(opcao);
-    } while (_executando);
+    return int.tryParse(entrada ?? '') ?? -1;
   }
 }

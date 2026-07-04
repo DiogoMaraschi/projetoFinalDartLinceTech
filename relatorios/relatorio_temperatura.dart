@@ -45,17 +45,49 @@ class RelatorioTemperatura extends Relatorio {
     buffer.writeln('Mínima anual:');
     _adicionarTemperaturas(buffer, minima);
 
+    _adicionarDadosMensais(buffer, leituras, estado);
+    _adicionarMediasPorHora(buffer, leituras, estado);
+
+    buffer.writeln('--------------------------------');
+    buffer.writeln();
+  }
+
+  // Adiciona média, máxima e mínima por mês
+  void _adicionarDadosMensais(
+    StringBuffer buffer,
+    List<LeituraClima> leituras,
+    Estado estado,
+  ) {
+    buffer.writeln('Dados por mês:');
+
+    for (var mes = 1; mes <= 12; mes++) {
+      final media = calculadora.mediaPorEstadoMes(leituras, estado, mes);
+      final maxima = calculadora.maximaPorEstadoMes(leituras, estado, mes);
+      final minima = calculadora.minimaPorEstadoMes(leituras, estado, mes);
+
+      buffer.writeln('Mês $mes:');
+      buffer.writeln('Média: ${media.toStringAsFixed(2)} °C');
+      buffer.writeln('Máxima: ${maxima.toStringAsFixed(2)} °C');
+      buffer.writeln('Mínima: ${minima.toStringAsFixed(2)} °C');
+      buffer.writeln();
+    }
+  }
+
+  // Adiciona médias de temperatura por hora
+  void _adicionarMediasPorHora(
+    StringBuffer buffer,
+    List<LeituraClima> leituras,
+    Estado estado,
+  ) {
     buffer.writeln('Médias por horário:');
 
     final mediasPorHora = calculadora.mediaPorHora(leituras, estado);
 
-    // Exibe a média de cada hora
     for (final entry in mediasPorHora.entries) {
       final hora = entry.key;
       final mediaHora = entry.value;
 
-      buffer.write('${hora}h -> ');
-      buffer.writeln('${mediaHora.toStringAsFixed(2)} °C');
+      buffer.writeln('${hora}h -> ${mediaHora.toStringAsFixed(2)} °C');
     }
 
     buffer.writeln();
