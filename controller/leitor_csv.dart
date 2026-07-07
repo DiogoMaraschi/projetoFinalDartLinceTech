@@ -6,9 +6,11 @@ import '../model/leitura_clima.dart';
 
 class LeitorCsv {
   // Diretório dos arquivos CSV
-  final diretorio = Directory(
-    '/Users/diogomaraschi/VSCODE/projetoFinalDartLinceTech/sensores',
-  );
+  final diretorio = Directory('C:/CLIMA/SENSORES');
+
+  // Diretório usado no meu computador para testes:
+  // final diretorio = Directory(
+  //     '/Users/diogomaraschi/VSCODE/projetoFinalDartLinceTech/sensores');
 
   Future<List<LeituraClima>> lerArquivosCsv() async {
     List<LeituraClima> listaCompleta = [];
