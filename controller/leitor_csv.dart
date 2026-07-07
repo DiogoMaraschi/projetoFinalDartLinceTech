@@ -4,14 +4,8 @@ import 'dart:convert';
 import '../model/estado.dart';
 import '../model/leitura_clima.dart';
 
-void main() async {
-  final leitor = LeitorCsv();
-
-  await leitor.lerArquivosCsv();
-}
-
 class LeitorCsv {
-  // Configura local do diretório
+  // Diretório dos arquivos CSV
   final diretorio = Directory(
     '/Users/diogomaraschi/VSCODE/projetoFinalDartLinceTech/sensores',
   );
@@ -19,34 +13,56 @@ class LeitorCsv {
   Future<List<LeituraClima>> lerArquivosCsv() async {
     List<LeituraClima> listaCompleta = [];
 
-    // Verifica se a pasta existe
-    if (await diretorio.exists()) {
-      // Lista todos os itens da pasta
+    try {
+      // Verifica se a pasta existe
+      if (!await diretorio.exists()) {
+        throw Exception(
+          'Falha ao extrair informações, diretório não encontrado',
+        );
+      }
+
+      // Lista arquivos do diretório
       final arquivos = diretorio.list();
 
-      // Percorre cada item encontrado
-      await for (var item in arquivos) {
-        // Processa apenas arquivos CSV
+      await for (final item in arquivos) {
+        // Filtra somente arquivos CSV
         if (item is File && item.path.endsWith('.csv')) {
-          // Lê todas as linhas do arquivo
-          final linhas = await item.readAsLines(encoding: latin1);
+          try {
+            // Lê arquivo usando latin1
+            final linhas = await item.readAsLines(
+              encoding: latin1,
+            );
 
-          // Obtém o estado pelo nome do arquivo
-          final estado = converterEstado(item.path);
+            // Extrai informações pelo nome do arquivo
+            final estado = converterEstado(item.path);
+            final ano = converterAno(item.path);
 
-          // Obtém o ano pelo nome do arquivo
-          final ano = converterAno(item.path);
+            // Converte CSV em objetos
+            final leituras = converterLinhas(
+              linhas,
+              estado,
+              ano,
+            );
 
-          // Converte as linhas em objetos
-          final leituras = converterLinhas(linhas, estado, ano);
-
-          // Adiciona a lista inteira
-          listaCompleta.addAll(leituras);
+            listaCompleta.addAll(leituras);
+          } catch (e) {
+            print(
+              'Falha na leitura do arquivo: ${item.path}',
+            );
+          }
         }
       }
-    } else {
-      print('Diretório não encontrado.');
+
+      // Verifica se encontrou leituras
+      if (listaCompleta.isEmpty) {
+        throw Exception(
+          'Falha ao extrair informações, nenhum arquivo encontrado',
+        );
+      }
+    } catch (e) {
+      print(e);
     }
+
     return listaCompleta;
   }
 
@@ -55,30 +71,33 @@ class LeitorCsv {
     Estado estado,
     int ano,
   ) {
-    // Lista que armazenará as leituras convertidas
+    // Armazena objetos convertidos
     final listaFormatada = <LeituraClima>[];
 
-    // Começa em 1 para ignorar o cabeçalho do CSV
+    // Ignora cabeçalho do CSV
     for (int i = 1; i < linhas.length; i++) {
-      // Separa as colunas da linha
       final colunas = linhas[i].split(',');
 
-      // Dados da data e hora
+      // Monta data completa
       final mes = int.parse(colunas[0]);
       final dia = int.parse(colunas[1]);
       final hora = int.parse(colunas[2]);
 
-      // Monta um DateTime com ano, mês, dia e hora
-      final dataHora = DateTime(ano, mes, dia, hora);
+      final dataHora = DateTime(
+        ano,
+        mes,
+        dia,
+        hora,
+      );
 
-      // Converte os demais dados para double
+      // Converte valores numéricos
       final temperatura = double.parse(colunas[3]);
       final umidade = double.parse(colunas[4]);
       final densidadeDoAr = double.parse(colunas[5]);
       final velocidadeDoVento = double.parse(colunas[6]);
       final direcaoDoVento = double.parse(colunas[7]);
 
-      // Cria um objeto LeituraClima e adiciona na lista
+      // Cria leitura climática
       listaFormatada.add(
         LeituraClima(
           estado: estado,
@@ -92,10 +111,10 @@ class LeitorCsv {
       );
     }
 
-    // Retorna todas as leituras convertidas
     return listaFormatada;
   }
 
+  // Obtém estado pelo nome do arquivo
   Estado converterEstado(String caminhoArquivo) {
     final nomeArquivo = caminhoArquivo.split('/').last;
     final sigla = nomeArquivo.split('_').first;
@@ -112,9 +131,11 @@ class LeitorCsv {
     }
   }
 
+  // Obtém ano pelo nome do arquivo
   int converterAno(String caminhoArquivo) {
     final nomeArquivo = caminhoArquivo.split('/').last;
     final partes = nomeArquivo.split('_');
+
     return int.parse(partes[1]);
   }
 }

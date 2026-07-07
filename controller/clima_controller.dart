@@ -1,6 +1,7 @@
 import '../relatorios/relatorio_temperatura.dart';
 import '../relatorios/relatorio_umidade.dart';
 import '../relatorios/relatorio_vento.dart';
+import '../utils/gravador_relatorio.dart';
 import '../view/menu.dart';
 import 'leitor_csv.dart';
 
@@ -14,6 +15,8 @@ class ClimaController {
 
   final relatorioVento = RelatorioVento();
 
+  final gravadorRelatorio = GravadorRelatorio();
+
   Future<void> iniciar() async {
     final leituras = await leitorCsv.lerArquivosCsv();
 
@@ -24,15 +27,21 @@ class ClimaController {
 
       switch (opcao) {
         case 1:
-          print(relatorioTemperatura.gerar(leituras));
+          final texto = (relatorioTemperatura.gerar(leituras));
+          print(texto);
+          await gravadorRelatorio.salvar('CLIMA', texto);
           break;
 
         case 2:
-          print(relatorioUmidade.gerar(leituras));
+          final texto = (relatorioUmidade.gerar(leituras));
+          print(texto);
+          await gravadorRelatorio.salvar('CLIMA', texto);
           break;
 
         case 3:
-          print(relatorioVento.gerar(leituras));
+          final texto = (relatorioVento.gerar(leituras));
+          print(texto);
+          await gravadorRelatorio.salvar('CLIMA', texto);
           break;
 
         case 0:
