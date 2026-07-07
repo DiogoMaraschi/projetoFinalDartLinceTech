@@ -1,10 +1,13 @@
 import '../calculadoras/calculadora_umidade.dart';
 import '../model/estado.dart';
 import '../model/leitura_clima.dart';
+import '../utils/cores.dart';
 import 'relatorio.dart';
 
 class RelatorioUmidade extends Relatorio {
-  final CalculadoraUmidade calculadora = CalculadoraUmidade();
+  final calculadora = CalculadoraUmidade();
+
+  final cores = Cores();
 
   @override
   String gerar(List<LeituraClima> leituras) {
@@ -34,9 +37,12 @@ class RelatorioUmidade extends Relatorio {
     buffer.writeln('Estado: ${estado.nome}');
     buffer.writeln();
 
-    buffer.writeln('Média anual: ${media.toStringAsFixed(6)} kg/kg');
-    buffer.writeln('Máxima anual: ${maxima.toStringAsFixed(6)} kg/kg');
-    buffer.writeln('Mínima anual: ${minima.toStringAsFixed(6)} kg/kg');
+    buffer
+        .writeln(cores.media('Média anual: ${media.toStringAsFixed(6)} kg/kg'));
+    buffer.writeln(
+        cores.maxima('Máxima anual: ${maxima.toStringAsFixed(6)} kg/kg'));
+    buffer.writeln(
+        cores.minima('Mínima anual: ${minima.toStringAsFixed(6)} kg/kg'));
     buffer.writeln();
 
     _adicionarDadosMensais(buffer, leituras, estado);
@@ -65,9 +71,11 @@ class RelatorioUmidade extends Relatorio {
       }
 
       buffer.writeln('Mês $mes:');
-      buffer.writeln('Média: ${media.toStringAsFixed(6)} kg/kg');
-      buffer.writeln('Máxima: ${maxima.toStringAsFixed(6)} kg/kg');
-      buffer.writeln('Mínima: ${minima.toStringAsFixed(6)} kg/kg');
+      buffer.writeln(cores.media('Média: ${media.toStringAsFixed(6)} kg/kg'));
+      buffer
+          .writeln(cores.maxima('Máxima: ${maxima.toStringAsFixed(6)} kg/kg'));
+      buffer
+          .writeln(cores.minima('Mínima: ${minima.toStringAsFixed(6)} kg/kg'));
       buffer.writeln();
     }
   }

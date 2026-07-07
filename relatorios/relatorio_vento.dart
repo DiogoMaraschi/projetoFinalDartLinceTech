@@ -2,11 +2,13 @@ import '../calculadoras/calculadora_vento.dart';
 import '../model/estado.dart';
 import '../model/leitura_clima.dart';
 import '../utils/conversor.dart';
+import '../utils/cores.dart';
 import 'relatorio.dart';
 
 class RelatorioVento extends Relatorio {
-  final CalculadoraVento calculadora = CalculadoraVento();
-  final Conversor conversor = Conversor();
+  final calculadora = CalculadoraVento();
+  final conversor = Conversor();
+  final cores = Cores();
 
   @override
   String gerar(List<LeituraClima> leituras) {
@@ -61,8 +63,8 @@ class RelatorioVento extends Relatorio {
     final radianos = conversor.grausParaRadianos(graus);
 
     buffer.writeln('$titulo:');
-    buffer.writeln('${graus.toStringAsFixed(2)}°');
-    buffer.writeln('${radianos.toStringAsFixed(4)} rad');
+    buffer.writeln(cores.vento('${graus.toStringAsFixed(2)}°'));
+    buffer.writeln(cores.vento('${radianos.toStringAsFixed(4)} rad'));
     buffer.writeln();
   }
 
