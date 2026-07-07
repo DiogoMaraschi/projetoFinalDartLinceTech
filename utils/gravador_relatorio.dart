@@ -14,13 +14,18 @@ class GravadorRelatorio {
 
     final nomeArquivo = '${prefixo}_${data}_$hora.txt';
 
-    final arquivo = File(nomeArquivo);
+    final diretorio = Directory('relatorios_gerados');
 
     try {
+      if (!await diretorio.exists()) {
+        await diretorio.create();
+      }
+
+      final arquivo = File('${diretorio.path}/$nomeArquivo');
       await arquivo.writeAsString(conteudo);
-      print('Relatório salvo em: $nomeArquivo');
+      print('Relatório salvo em: ${arquivo.path}');
     } catch (e) {
-      print(e);
+      print('Não foi possível gerar relatório! Erro: $e');
     }
   }
 }
